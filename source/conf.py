@@ -63,7 +63,9 @@ html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
 
 source_parsers = {
-        '.md','recommonmark.parse.CommonMarkParser',
-        }
+    '.md': CommonMarkParser,
+    '.MD': CommonMarkParser,
+}
 
-source_suffix = ['.rst','.md']
+source_suffix = ['.rst', '.md', '.MD']
+
