@@ -211,6 +211,110 @@ fmt.Println(os.Args[1:])
 
 ## 查找重复的行
 
+用于文件复制、打印、检索、排序、统计的程序，通常有一个相似的结构: 在输入接口上循环读取，然后对每一个元素进行一些计算，在运行时或在最后输出结果。将展示本个版本的dup程序，它受UNIX的`uniq`命令启发来找到相邻的重复行。
+
+第一个版本的dup程序输出标准输入中出现次数大于1的行，前面是次数。
+
+`ch1/dup1`
+
+```golang
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+)
+
+func main(){
+	counts := make(mat[string]int)
+	input := bufio.NewScanner(os.Stdin)
+	for input.Scan() {
+		counts[input.Text()]++
+	}
+	// 注意: 忽略input.Err()中可能的错误
+	for line,n := range counts {
+		if n > 1 {
+			fmt.Printf("%d\t%s\n",n,line)
+		}
+	}
+}
+```
+
+正如`for`循环一样,`if`语句条件两边也不加括号，但是主体部分需要加。`if`语句的`else`部分是可选的，在`if`的条件为`false`时执行。
+
+`map`存储了键/值(key/value)的集合，对集合元素，提供常数时间的存、取或测试操作。键可以是任意类型，只要其值能用`==`运算符比较，最常见的是字符串;值可以是任意类型。这个例子中的键是字符串，值中整数。内置函数`make`创建空`map`，此外，它还有别的作用。
+
+每次`dup`读取一行输入，该行被当做`map`，其对应的值递增。`counts[input.Text()]++`语句等价下面两句
+
+```golang
+line := input.Text()
+counts[line] = count[line] + 1
+```
+
+`map`中不含某个键时不用担心，首次读取到新行时，等号右边的表达式`counts[line]`的值将被计算为其类型的零值，对于`int`即0
+
+为了打印结果，我们使用了基于`range`的循环，并在`counts`这个`map`上迭代。每次迭代得到两个结果，键和其在`map`中对应的值。`map`的迭代顺序并不确定，从实践中来看，该顺序随机，每次运行都会变化。这种设计是有意为之的，因为能防止程序依赖特定遍历顺序，而这是无法保证的。
+
+继续来看`bufio`包，它使处理输入和输出方便又高效。`Scanner`类型是该最有用的特性之一，它读取输入，以行或单词为单位断开，这是处理以行为单位的输入内容的最简单方式。
+
+程序使用短变量的声明方式，新建一个`bufio.Scanner`类型的`input`变量:
+
+```go
+input := bufio.Scanner(os.Stdin)
+```
+
+扫描器从程序的标准输入进行读取，每一次调用`input.Scan()`读取下一行，并且将结尾的换行符去掉通过调用`input.Text()`来获取读到的内容。`Scan`函数在读到新行时，返回`true`，在没有更多的内容时返回`false`。
+
+程序dup1中的格式的字符串还包含一个制表符`\t`和一个换行符`\n`。字符串字面量可以包含类似转义序列(escape sequenc)来表示不可见字符。`Printf`默认不写换行符。执照约定，诸如`log.Printf`和`fmt.Printf`之类的格式化函数以`f`结尾，使用和`fmt.Printf`相同的格式化规则：而那些以`ln`结尾的函数(如`Println`)则使用`%v`的方式来格式化参数，并在最后追加换行符。
+
+许多程序既可以像dup一样从标准输入进行读取，也可以从具体的文件读取。下一个版本的dup程序可以从标准输入或一个文件列表进行读取，使用`os.Open`函数来逐个打开:
+
+`ch1/dup2`
+
+```golang
+// dup2 打印输入中多次出现的行的个数和文本
+// 它从 `stdin`或指定的文件列表读取
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+)
+
+func main(){
+	counts := make(map[string]int)
+	files := os.Args[1:]
+	if len(files) == 0 {
+		countLines(os.Stdin,counts)
+	}else {
+		for _,arg := range files {
+			f,err := os.Open(arg)
+			if err != nil {
+				fmt.Fprintf(os.Stderr,"dup2: %v\n",err)
+				continue
+			}
+			countLines(f,counts)
+			f.Close()
+		}
+	}
+	for line,n := range counts {
+		if n > 1 {
+			fmt.Printf("%d\t%s\n",n,line)
+		}
+	}
+}
+
+func countLines(f *os.File,counts map[string]int){
+	input := bufio.NewScanner(f)
+	for input.Scan() {
+		counts[input.Text()]++
+	}
+	// 注意: 忽略`input.Err()`中可能的错误
+}
+```
+
 
 
 ## GIF动画
