@@ -86,7 +86,7 @@ Go语言的面向对象机制与一般语言不同。它没有类层次结构，
 
 `ch1/helloworld.go`
 
-```golang
+```GO
 package main
 
 import "fmt"
@@ -163,7 +163,7 @@ go get golang.org/x/tools/cmd/goimports
 
 `ch1/echo1`
 
-```golang
+```GO
 // echo1输出其命令行参数
 package main
 
@@ -195,7 +195,7 @@ for循环的三个组成部分两边不用小括号,大括号是必需的,但左
 
 `ch1/ceho3`
 
-```golang
+```go
 func main(){
 	fmt.Println(strings.Join(os.Args[1:]," "))
 }
@@ -203,7 +203,7 @@ func main(){
 
 最后,如果不关心格式,只想看值,或只是调试,可以用`Println`格式化结果
 
-```golang
+```go
 fmt.Println(os.Args[1:])
 ```
 
@@ -217,7 +217,7 @@ fmt.Println(os.Args[1:])
 
 `ch1/dup1`
 
-```golang
+```go
 package main
 
 import (
@@ -247,7 +247,7 @@ func main(){
 
 每次`dup`读取一行输入，该行被当做`map`，其对应的值递增。`counts[input.Text()]++`语句等价下面两句
 
-```golang
+```go
 line := input.Text()
 counts[line] = count[line] + 1
 ```
@@ -272,7 +272,7 @@ input := bufio.Scanner(os.Stdin)
 
 `ch1/dup2`
 
-```golang
+```go
 // dup2 打印输入中多次出现的行的个数和文本
 // 它从 `stdin`或指定的文件列表读取
 package main
@@ -523,7 +523,7 @@ func fetch(url string, ch chan<- string) {
 
 ```
 $ go build gopl.io/ch1/fetchall
-$ ./fetchall https://golang.org http://gopl.io https://godoc.org
+$ ./fetchall https://go.org http://gopl.io https://godoc.org
 0.14s     6852  https://godoc.org
 0.16s     7261  https://golang.org
 0.48s     2475  http://gopl.io
@@ -542,7 +542,7 @@ main函数中用make函数创建了一个传递string类型参数的channel，�
 
 `ch1/web01`
 
-```golang
+```go
 package main
 
 import (
@@ -580,7 +580,7 @@ func counter(w http.ResponseWriter, r *http.Request) {
 
 作为一个更完整的例子，处理函数可以报告它接收到的消息头和表单数据，这样可以方便服务器审查和调试请求:
 
-```golang
+```go
 // 处理程序回调请求RUL r的路径部分
 func handler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "%s %s %s\n", r.Method, r.URL, r.Proto)
