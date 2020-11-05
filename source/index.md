@@ -606,7 +606,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 这里使用`http.Request`结构体的成员来产生类似正面的输出:
 
-```conf
+```bash
 GET /?q=query HTTP/1.1
 Header["Sec-Fetch-Site"] = ["none"]
 Header["Sec-Fetch-User"] = ["?1"]
